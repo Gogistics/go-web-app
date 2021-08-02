@@ -1,0 +1,81 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_source", "go_test")
+
+filegroup(
+    name = "https_certs",
+    srcs = [
+        "cert.pem",
+        "key.pem",
+    ],
+)
+
+filegroup(
+    name = "sources",
+    srcs = glob(["**"]),
+)
+
+go_library(
+    name = "go_default_library",
+    srcs = ["main.go"],
+    importpath = "github.com/Gogistics/go-web-app/api-app",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//api-app/types:go_default_library",
+        "@com_github_gorilla_mux//:go_default_library",
+    ],
+)
+
+# Note: convert certs into strings during binary build
+# ...
+# data = [
+#     "//api-app/certs:cert.pem",
+#     "//api-app/certs:key.pem",
+# ],
+go_binary(
+    name = "api",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)
+
+# docker build
+
+# load("@io_bazel_rules_docker//go:image.bzl", "go_image")
+# go_image(
+#     name = "base_image",
+#     embed = [":api-app_lib"],
+#     visibility = ["//visibility:public"],
+# )
+# ref: https://github.com/bazelbuild/rules_docker/blob/master/docs/container.md#container_image
+
+load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+container_image(
+    name = "atai-v0.0.0",  # image tag
+    base = "@alpine_linux_amd64//image",
+    entrypoint = [
+        "/api",
+    ],
+    files = [
+        ":api",
+        ":https_certs",
+    ],
+    repository = "alantai",
+    visibility = ["//visibility:public"],
+)
+# ref: https://github.com/bazelbuild/rules_docker/blob/master/container/image.bzl
+
+# TODO: declare where and how the image will be published
+# container_push(
+#     name = "push",
+#     format = "Docker",
+#     image = ":atai-v0.0.0",
+#     registry = "index.docker.io",
+#     repository = "alantai",
+#     tag = "atai-v0.0.0",  # don't use this on production image :)
+# )
+
+# unit tests
+go_test(
+    name = "go_default_test",
+    srcs = ["main_test.go"],
+    embed = [":go_default_library"],
+    deps = ["@com_github_google_go_cmp//cmp:go_default_library"],
+)
