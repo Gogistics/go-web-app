@@ -6,7 +6,7 @@
 # 2-1.
 $ go mod init github.com/Gogistics/go-web-app
 
-# 2-2. build a simple web app, main.go, with the sub-packages.
+# 2-2. build a simple web app, main.go, under /api-app
 
 # 2-3. make sure the app can run successfully
 $ go run main.go
@@ -67,14 +67,13 @@ Issues:
 - https://github.com/bazelbuild/rules_go/issues/2539
 
 
-===
 
-Remote caching (to be continued)
+## Remote caching (to be continued)
 
 Ref:
 - https://docs.bazel.build/versions/main/remote-caching.html
 
-===
+
 
 ## React build by Bazel (to be continued)
 
