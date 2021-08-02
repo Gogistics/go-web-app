@@ -69,7 +69,7 @@ container_image(
 #     image = ":atai-v0.0.0",
 #     registry = "index.docker.io",
 #     repository = "alantai",
-#     tag = "atai-v0.0.0",  # don't use this on production image :)
+#     tag = "atai-v0.0.0",
 # )
 
 # unit tests
