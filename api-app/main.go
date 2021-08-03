@@ -13,7 +13,7 @@ import (
 // to instantiate and test the router outside of the main function
 func newRouter() *mux.Router {
   r := mux.NewRouter()
-  r.HandleFunc("/api-go/v1/hello", handler).Methods("GET")
+  r.HandleFunc("/api/v1/hello", handler).Methods("GET")
   return r
 }
 

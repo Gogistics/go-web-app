@@ -6,6 +6,7 @@ import (
   "testing"
   "encoding/json"
   "github.com/google/go-cmp/cmp"
+  "github.com/Gogistics/go-web-app/api-app/types"
 )
 func TestRouter(t *testing.T) {
   // Instantiate the router using the constructor function that
@@ -34,7 +35,7 @@ func TestRouter(t *testing.T) {
   defer resp.Body.Close()
   
   // new a Profile struct
-  var p Profile
+  var p types.Profile
 
   // Try to decode the request body into the struct. If there is an error,
   // throw an error.
@@ -44,7 +45,7 @@ func TestRouter(t *testing.T) {
   }
 
 
-  expected := Profile{"Alan", []string{"workout", "programming", "driving"}}
+  expected := types.Profile{"Alan", []string{"workout", "programming", "driving"}}
   expectedProfile, err := json.Marshal(expected)
   // We want our response to match the one defined in our handler.
   if cmp.Equal(p, expectedProfile) {

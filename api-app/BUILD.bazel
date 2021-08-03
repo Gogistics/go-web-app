@@ -46,7 +46,7 @@ go_binary(
 # )
 # ref: https://github.com/bazelbuild/rules_docker/blob/master/docs/container.md#container_image
 
-load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_push")
 container_image(
     name = "atai-v0.0.0",  # image tag
     base = "@alpine_linux_amd64//image",
@@ -62,20 +62,23 @@ container_image(
 )
 # ref: https://github.com/bazelbuild/rules_docker/blob/master/container/image.bzl
 
-# TODO: declare where and how the image will be published
-# container_push(
-#     name = "push",
-#     format = "Docker",
-#     image = ":atai-v0.0.0",
-#     registry = "index.docker.io",
-#     repository = "alantai",
-#     tag = "atai-v0.0.0",
-# )
+# declare where and how the image will be published
+container_push(
+    name = "push",
+    format = "Docker",
+    image = ":atai-v0.0.0",
+    registry = "index.docker.io",
+    repository = "alantai/api-app",
+    tag = "atai-v0.0.0",
+)
 
 # unit tests
 go_test(
     name = "go_default_test",
     srcs = ["main_test.go"],
     embed = [":go_default_library"],
-    deps = ["@com_github_google_go_cmp//cmp:go_default_library"],
+    deps = [
+        "//api-app/types:go_default_library",
+        "@com_github_google_go_cmp//cmp:go_default_library"
+    ],
 )

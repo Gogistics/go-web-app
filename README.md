@@ -15,6 +15,8 @@ $ go run main.go
 $ go test ./...
 ```
 
+## Bazel 
+
 3. write WORKSPACE and its corresponding BUILD.bazel and run the following commands
 ```sh
 # run the gazelle target specified in the BUILD file
@@ -51,20 +53,17 @@ $ curl -k https://0.0.0.0:8443/api-go/v1/hello # {"Name":"Alan","Hobbies":["work
 $ bazel test --sandbox_debug //api-app/...
 ```
 
-Notes:
-* not fully work yet
-* unable to add certs into compiled package
-* unable to bring up a container with the built docker image
+6. .bazelrc, the Bazel configuration file
+Bazel accepts many options. Some options are varied frequently (for example, --subcommands) while others stay the same across several builds (such as --package_path). To avoid specifying these unchanged options for every build (and other commands), you can specify options in a configuration file.
 
 
 Ref:
+- https://docs.bazel.build/versions/main/guide.html
 - https://www.even.com/blog/testing-fast-easy-bazel
 - https://zhuanlan.zhihu.com/p/203325500
 
 Issues:
 - https://stackoverflow.com/questions/59019448/what-is-the-difference-between-importmap-and-importpath-in-bazel-build-f
-- https://github.com/bazelbuild/rules_docker/issues/1305
-- https://github.com/bazelbuild/rules_go/issues/2539
 
 
 
