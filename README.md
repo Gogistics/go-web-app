@@ -44,8 +44,10 @@ $ docker images # in my case, the image repository is alantai/api-app and the ta
 $ docker run -d --name atai-bazel -p 8443:443 alantai/api-app:atai-v0.0.0
 
 # test
-$ curl -k https://0.0.0.0:8443/api-go/v1/hello # {"Name":"Alan","Hobbies":["workout","programming","driving"]}
+$ curl -k https://0.0.0.0:8443/api/v1/hello # {"Name":"Alan","Hobbies":["workout","programming","driving"]}
 
+# after successfully push dokcer image to docker registry
+$ bazel run //api-app:push
 ```
 
 5. let bazel run tests
@@ -59,8 +61,10 @@ Bazel accepts many options. Some options are varied frequently (for example, --s
 
 Ref:
 - https://docs.bazel.build/versions/main/guide.html
+- https://github.com/bazelbuild/bazel-gazelle
 - https://www.even.com/blog/testing-fast-easy-bazel
 - https://zhuanlan.zhihu.com/p/203325500
+- https://gist.github.com/6174/9ff5063a43f0edd82c8186e417aae1dc
 
 Issues:
 - https://stackoverflow.com/questions/59019448/what-is-the-difference-between-importmap-and-importpath-in-bazel-build-f
