@@ -15,6 +15,36 @@ $ go run main.go
 $ go test ./...
 ```
 
+## Envoy proxy (in progress)
+
+```sh
+# generate cert and key
+$ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj '/CN=atai.com'
+
+$ docker run -d \
+      --name atai_envoy \
+      -p 80:80 -p 443:443 -p 10000:10000 \
+      --network atai_envoy \
+      --ip "172.18.0.10" \
+      --log-opt mode=non-blocking \
+      --log-opt max-buffer-size=5m \
+      --log-opt max-size=100m \
+      --log-opt max-file=5 \
+      alantai/envoy:v1
+
+# update /etc/hosts
+# e.g. add 0.0.0.0 dev.atai.com
+
+```
+Ref:
+- https://hub.docker.com/r/envoyproxy/envoy-alpine-dev
+- https://www.envoyproxy.io/docs/envoy/latest/start/docker
+
+Issues:
+- https://pjausovec.medium.com/the-v2-xds-major-version-is-deprecated-and-disabled-by-default-envoy-60672b1968cb
+- https://stackoverflow.com/questions/63712716/envoy-proxy-v3-api-with-http-and-https-both
+
+
 ## Bazel 
 
 3. write WORKSPACE and its corresponding BUILD.bazel and run the following commands
@@ -41,7 +71,16 @@ $ bazel run --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //api-app:a
 $ docker images # in my case, the image repository is alantai/api-app and the tag is atai-v0.0.0
 
 # run app in container
-$ docker run -d --name atai-bazel -p 8443:443 alantai/api-app:atai-v0.0.0
+$ docker run -d \
+    -p 8443:443 \
+    --name atai_api \
+    --network atai_envoy \
+    --ip "172.18.0.11" \
+    --log-opt mode=non-blocking \
+    --log-opt max-buffer-size=5m \
+    --log-opt max-size=100m \
+    --log-opt max-file=5 \
+    alantai/api-app:atai-v0.0.0
 
 # test
 $ curl -k https://0.0.0.0:8443/api/v1/hello # {"Name":"Alan","Hobbies":["workout","programming","driving"]}

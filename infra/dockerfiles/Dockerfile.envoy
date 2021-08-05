@@ -1,0 +1,23 @@
+# Envoy proxy
+# build img: docker build -t alantai/envoy:v1 -f ./infra/dockerfiles/Dockerfile.envoy .
+# run container:
+#   docker run -d \
+#       --name atai_envoy \
+#       -p 80:80 -p 443:443 -p 10000:10000 \
+#       --network atai_envoy \
+#       --ip "172.18.0.10" \
+#       --log-opt mode=non-blocking \
+#       --log-opt max-buffer-size=5m \
+#       --log-opt max-size=100m \
+#       --log-opt max-file=5 \
+#       alantai/envoy:v1
+
+FROM envoyproxy/envoy-alpine-dev:latest
+
+LABEL maintainer="Alan Tai <gogistics@gogistics-tw.com>"
+
+COPY ./infra/certs/*.pem /etc/envoy/certs/
+COPY ./infra/config/envoy-config.yaml /etc/envoy/envoy.yaml
+
+RUN chmod 744 /etc/envoy/certs/*
+RUN chmod go+r /etc/envoy/envoy.yaml
