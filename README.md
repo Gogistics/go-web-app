@@ -37,12 +37,15 @@ $ docker run -d \
 
 ```
 Ref:
+- https://www.envoyproxy.io/docs/envoy/latest/start/sandboxes/tls
 - https://hub.docker.com/r/envoyproxy/envoy-alpine-dev
 - https://www.envoyproxy.io/docs/envoy/latest/start/docker
 
 Issues:
+- https://github.com/gliderlabs/docker-alpine/issues/52
 - https://pjausovec.medium.com/the-v2-xds-major-version-is-deprecated-and-disabled-by-default-envoy-60672b1968cb
 - https://stackoverflow.com/questions/63712716/envoy-proxy-v3-api-with-http-and-https-both
+- https://github.com/salrashid123/envoy_discovery/issues/3
 
 
 ## Bazel 

@@ -5,6 +5,7 @@ filegroup(
     srcs = [
         "cert.pem",
         "key.pem",
+        "ca-certificates.crt"
     ],
 )
 
@@ -50,6 +51,7 @@ load("@io_bazel_rules_docker//container:container.bzl", "container_image", "cont
 container_image(
     name = "atai-v0.0.0",  # image tag
     base = "@alpine_linux_amd64//image",
+    cmd = ["apk --no-cache add ca-certificates"],
     entrypoint = [
         "/api",
     ],

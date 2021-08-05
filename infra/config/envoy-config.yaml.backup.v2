@@ -1,3 +1,4 @@
+# envoy v3 config.
 static_resources:
   listeners:
   - name: listener_https
@@ -54,3 +55,13 @@ static_resources:
       name: envoy.transport_sockets.tls
       typed_config:
         "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+        common_tls_context:
+          alpn_protocols: [ "h2,http/1.1" ]
+          tls_certificates:
+          - certificate_chain: {"filename": "/etc/envoy/certs/cert.pem"}
+            private_key: {"filename": "/etc/envoy/certs/key.pem"}
+          validation_context:
+            match_subject_alt_names:
+            - exact: "atai.com"
+            trusted_ca:
+              filename: "/etc/ssl/certs/ca-certificates.crt"
