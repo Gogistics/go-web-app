@@ -3,9 +3,9 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_source", "
 filegroup(
     name = "https_certs",
     srcs = [
-        "cert.pem",
-        "key.pem",
-        "ca-certificates.crt"
+        "//api-app/certs:cert.pem",
+        "//api-app/certs:key.pem",
+        "//api-app/certs:ca-certificates.crt"
     ],
 )
 

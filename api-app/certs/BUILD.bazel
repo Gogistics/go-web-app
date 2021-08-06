@@ -1,4 +1,5 @@
 exports_files([
     "cert.pem",
     "key.pem",
+    "ca-certificates.crt",
 ])

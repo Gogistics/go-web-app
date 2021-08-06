@@ -21,9 +21,13 @@ $ go test ./...
 # generate cert and key
 $ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj '/CN=atai.com'
 
+# build image
+$ docker build -t alantai/envoy:v1 -f ./infra/dockerfiles/Dockerfile.envoy .
+
+# spin up container
 $ docker run -d \
       --name atai_envoy \
-      -p 80:80 -p 443:443 -p 10000:10000 \
+      -p 80:80 -p 443:443 -p 10000:10000 -p 8001:8001 \
       --network atai_envoy \
       --ip "172.18.0.10" \
       --log-opt mode=non-blocking \
