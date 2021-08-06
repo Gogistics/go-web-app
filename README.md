@@ -15,45 +15,9 @@ $ go run main.go
 $ go test ./...
 ```
 
-## Envoy proxy (in progress)
-
-```sh
-# generate cert and key
-$ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj '/CN=atai.com'
-
-# build image
-$ docker build -t alantai/envoy:v1 -f ./infra/dockerfiles/Dockerfile.envoy .
-
-# spin up container
-$ docker run -d \
-      --name atai_envoy \
-      -p 80:80 -p 443:443 -p 10000:10000 -p 8001:8001 \
-      --network atai_envoy \
-      --ip "172.18.0.10" \
-      --log-opt mode=non-blocking \
-      --log-opt max-buffer-size=5m \
-      --log-opt max-size=100m \
-      --log-opt max-file=5 \
-      alantai/envoy:v1
-
-# update /etc/hosts
-# e.g. add 0.0.0.0 dev.atai.com
-
-```
-Ref:
-- https://www.envoyproxy.io/docs/envoy/latest/start/sandboxes/tls
-- https://hub.docker.com/r/envoyproxy/envoy-alpine-dev
-- https://www.envoyproxy.io/docs/envoy/latest/start/docker
-
-Issues:
-- https://github.com/gliderlabs/docker-alpine/issues/52
-- https://pjausovec.medium.com/the-v2-xds-major-version-is-deprecated-and-disabled-by-default-envoy-60672b1968cb
-- https://stackoverflow.com/questions/63712716/envoy-proxy-v3-api-with-http-and-https-both
-- https://github.com/salrashid123/envoy_discovery/issues/3
-
-
 ## Bazel 
 
+### General setup and build
 3. write WORKSPACE and its corresponding BUILD.bazel and run the following commands
 ```sh
 # run the gazelle target specified in the BUILD file
@@ -116,18 +80,59 @@ Issues:
 - https://stackoverflow.com/questions/59019448/what-is-the-difference-between-importmap-and-importpath-in-bazel-build-f
 
 
-
-## Remote caching (to be continued)
+### Remote caching (to be continued)
 
 Ref:
 - https://docs.bazel.build/versions/main/remote-caching.html
 
 
-
-## React build by Bazel (to be continued)
+### React build by Bazel (to be continued)
 
 Ref:
 - https://github.com/salrashid123/go-grpc-bazel-docker
 - https://github.com/thelgevold/react-bazel-example
 - https://www.syntaxsuccess.com/viewarticle/large-react-production-bazel-build
 
+
+
+## Envoy proxy (in progress)
+
+```sh
+# generate cert and key
+$ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj '/CN=atai.com'
+
+# build image
+$ docker build -t alantai/envoy:v1 -f ./infra/dockerfiles/Dockerfile.envoy .
+
+# spin up container
+$ docker run -d \
+      --name atai_envoy \
+      -p 80:80 -p 443:443 -p 10000:10000 -p 8001:8001 \
+      --network atai_envoy \
+      --ip "172.18.0.10" \
+      --log-opt mode=non-blocking \
+      --log-opt max-buffer-size=5m \
+      --log-opt max-size=100m \
+      --log-opt max-file=5 \
+      alantai/envoy:v1
+
+# update /etc/hosts of your local environment or the place you want to test the setup
+# e.g. add 0.0.0.0 atai.com
+
+# visit home page with a table of links to all available options => http://atai.com:8001/
+
+# query to print a textual table of all available options; please refer to the official page for more information
+$ curl http://atai.com:8001/help
+
+```
+Ref:
+- https://www.envoyproxy.io/docs/envoy/latest/start/sandboxes/tls
+- https://hub.docker.com/r/envoyproxy/envoy-alpine-dev
+- https://www.envoyproxy.io/docs/envoy/latest/start/docker
+- https://www.envoyproxy.io/docs/envoy/latest/operations/admin#
+
+Issues:
+- https://github.com/gliderlabs/docker-alpine/issues/52
+- https://pjausovec.medium.com/the-v2-xds-major-version-is-deprecated-and-disabled-by-default-envoy-60672b1968cb
+- https://stackoverflow.com/questions/63712716/envoy-proxy-v3-api-with-http-and-https-both
+- https://github.com/salrashid123/envoy_discovery/issues/3
