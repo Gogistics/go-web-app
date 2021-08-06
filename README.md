@@ -41,7 +41,7 @@ $ bazel run --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //api-app:a
 # after building the image, check if the image exists
 $ docker images # in my case, the image repository is alantai/api-app and the tag is atai-v0.0.0
 
-# run app in container
+# run app in container; if you are going to test the app through Envoy, -p 8443:443 can be removed
 $ docker run -d \
     -p 8443:443 \
     --name atai_api \
@@ -53,7 +53,7 @@ $ docker run -d \
     --log-opt max-file=5 \
     alantai/api-app:atai-v0.0.0
 
-# test
+# test the golang app
 $ curl -k https://0.0.0.0:8443/api/v1/hello # {"Name":"Alan","Hobbies":["workout","programming","driving"]}
 
 # after successfully push dokcer image to docker registry
@@ -123,6 +123,56 @@ $ docker run -d \
 
 # query to print a textual table of all available options; please refer to the official page for more information
 $ curl http://atai.com:8001/help
+
+# test the golang app through Envoy and the response looks as below
+$ curl -k https://atai.com/api/v1/hello -vvv
+
+# *   Trying 0.0.0.0...
+# * TCP_NODELAY set
+# * Connected to atai.com (127.0.0.1) port 443 (#0)
+# * ALPN, offering h2
+# * ALPN, offering http/1.1
+# * successfully set certificate verify locations:
+# *   CAfile: /etc/ssl/cert.pem
+#   CApath: none
+# * TLSv1.2 (OUT), TLS handshake, Client hello (1):
+# * TLSv1.2 (IN), TLS handshake, Server hello (2):
+# * TLSv1.2 (IN), TLS handshake, Certificate (11):
+# * TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+# * TLSv1.2 (IN), TLS handshake, Request CERT (13):
+# * TLSv1.2 (IN), TLS handshake, Server finished (14):
+# * TLSv1.2 (OUT), TLS handshake, Certificate (11):
+# * TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+# * TLSv1.2 (OUT), TLS change cipher, Change cipher spec (1):
+# * TLSv1.2 (OUT), TLS handshake, Finished (20):
+# * TLSv1.2 (IN), TLS change cipher, Change cipher spec (1):
+# * TLSv1.2 (IN), TLS handshake, Finished (20):
+# * SSL connection using TLSv1.2 / ECDHE-RSA-CHACHA20-POLY1305
+# * ALPN, server accepted to use h2
+# * Server certificate:
+# *  subject: CN=atai.com
+# *  start date: Jun 17 20:00:04 2021 GMT
+# *  expire date: Jun 17 20:00:04 2022 GMT
+# *  issuer: CN=atai.com
+# *  SSL certificate verify result: self signed certificate (18), continuing anyway.
+# * Using HTTP2, server supports multi-use
+# * Connection state changed (HTTP/2 confirmed)
+# * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+# * Using Stream ID: 1 (easy handle 0x7fcaef80d600)
+# > GET /api/v1/hello HTTP/2
+# > Host: atai.com
+# > User-Agent: curl/7.64.1
+# > Accept: */*
+# > 
+# * Connection state changed (MAX_CONCURRENT_STREAMS == 2147483647)!
+# < HTTP/2 200 
+# < content-type: applicaiton/json; charset=utf-8
+# < content-length: 61
+# < date: Fri, 06 Aug 2021 17:16:10 GMT
+# < x-envoy-upstream-service-time: 1
+# < server: envoy
+# < 
+# * Connection #0 to host atai.com left intact
 
 ```
 Ref:
