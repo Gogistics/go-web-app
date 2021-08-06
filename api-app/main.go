@@ -1,10 +1,12 @@
 package main
 
 import (
+  "fmt"
   "log"
   "encoding/json"
   "net/http"
   "github.com/gorilla/mux"
+  "github.com/gorilla/websocket"
   "github.com/Gogistics/go-web-app/api-app/types"
 )
 
@@ -13,7 +15,8 @@ import (
 // to instantiate and test the router outside of the main function
 func newRouter() *mux.Router {
   r := mux.NewRouter()
-  r.HandleFunc("/api/v1/hello", handler).Methods("GET")
+  r.HandleFunc("/api/v1/hello", handlerHello).Methods("GET")
+  r.HandleFunc("/ws-echo", handlerWS)
   return r
 }
 
@@ -27,7 +30,7 @@ func main() {
   }
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func handlerHello(w http.ResponseWriter, r *http.Request) {
   profile := types.Profile{"Alan", []string{"workout", "programming", "driving"}}
   jProfile, err := json.Marshal(profile)
 
@@ -38,4 +41,32 @@ func handler(w http.ResponseWriter, r *http.Request) {
   }
   w.Header().Set("Content-Type", "applicaiton/json; charset=utf-8")
   w.Write(jProfile) 
+}
+
+func handlerWS(w http.ResponseWriter, r *http.Request) {
+  var upgrader = websocket.Upgrader{
+    ReadBufferSize:  1024,
+    WriteBufferSize: 1024,
+  }
+
+  conn, errConn := upgrader.Upgrade(w, r, nil)
+  if errConn != nil {
+    log.Fatal("WS failed to build connection")
+    return
+  }
+
+  for {
+    msgType, msg, errReadMsg := conn.ReadMessage()
+    if errReadMsg != nil {
+      return
+    }
+
+    // print msg
+    fmt.Printf("%s sent: %s\n", conn.RemoteAddr(), string(msg))
+
+    // Write msg back to client
+    if errWriteMsg := conn.WriteMessage(msgType, msg); errWriteMsg != nil {
+        return
+    }
+  }
 }

@@ -3,9 +3,9 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_source", "
 filegroup(
     name = "https_certs",
     srcs = [
+        "//api-app/certs:ca-certificates.crt",
         "//api-app/certs:cert.pem",
         "//api-app/certs:key.pem",
-        "//api-app/certs:ca-certificates.crt"
     ],
 )
 
@@ -22,6 +22,7 @@ go_library(
     deps = [
         "//api-app/types:go_default_library",
         "@com_github_gorilla_mux//:go_default_library",
+        "@com_github_gorilla_websocket//:go_default_library",
     ],
 )
 
@@ -48,6 +49,7 @@ go_binary(
 # ref: https://github.com/bazelbuild/rules_docker/blob/master/docs/container.md#container_image
 
 load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_push")
+
 container_image(
     name = "atai-v0.0.0",  # image tag
     base = "@alpine_linux_amd64//image",
@@ -81,6 +83,6 @@ go_test(
     embed = [":go_default_library"],
     deps = [
         "//api-app/types:go_default_library",
-        "@com_github_google_go_cmp//cmp:go_default_library"
+        "@com_github_google_go_cmp//cmp:go_default_library",
     ],
 )

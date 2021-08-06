@@ -8,6 +8,13 @@ def go_dependencies():
         version = "v0.5.6",
     )
     go_repository(
+        name = "com_github_gorilla_websocket",
+        importpath = "github.com/gorilla/websocket",
+        sum = "h1:+/TMaTYc4QFitKJxsQ7Yye35DkWvkdLcvGKqM+x0Ufc=",
+        version = "v1.4.2",
+    )
+
+    go_repository(
         name = "org_golang_x_xerrors",
         importpath = "golang.org/x/xerrors",
         sum = "h1:E7g+9GITq07hpfrRu66IVDexMakfv52eLZ2CXBWiKr4=",

@@ -1,3 +1,4 @@
+# Golang, Bazel, Envoy, etc.
 
 ## Golang app
 1. create a container for running Goalng
@@ -56,7 +57,7 @@ $ docker run -d \
 # test the golang app
 $ curl -k https://0.0.0.0:8443/api/v1/hello # {"Name":"Alan","Hobbies":["workout","programming","driving"]}
 
-# after successfully push dokcer image to docker registry
+# login to the registry and push the docker image to the container registry
 $ bazel run //api-app:push
 ```
 
@@ -84,6 +85,7 @@ Issues:
 
 Ref:
 - https://docs.bazel.build/versions/main/remote-caching.html
+- https://github.com/buchgr/bazel-remote
 
 
 ### React build by Bazel (to be continued)
@@ -176,10 +178,11 @@ $ curl -k https://atai.com/api/v1/hello -vvv
 
 ```
 Ref:
-- https://www.envoyproxy.io/docs/envoy/latest/start/sandboxes/tls
-- https://hub.docker.com/r/envoyproxy/envoy-alpine-dev
 - https://www.envoyproxy.io/docs/envoy/latest/start/docker
 - https://www.envoyproxy.io/docs/envoy/latest/operations/admin#
+- https://www.envoyproxy.io/docs/envoy/latest/start/sandboxes/tls
+- https://hub.docker.com/r/envoyproxy/envoy-alpine-dev
+- https://pi3g.com/2019/01/17/envoy-as-http-2-front-proxy-enabling-http-2-for-envoy-aka-h2/
 
 Issues:
 - https://github.com/gliderlabs/docker-alpine/issues/52
