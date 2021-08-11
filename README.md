@@ -45,7 +45,7 @@ $ docker images # in my case, the image repository is alantai/api-app and the ta
 # run app in container; if you are going to test the app through Envoy, -p 8443:443 can be removed
 $ docker run -d \
     -p 8443:443 \
-    --name atai_api \
+    --name atai_api_1 \
     --network atai_envoy \
     --ip "172.18.0.11" \
     --log-opt mode=non-blocking \
@@ -54,8 +54,18 @@ $ docker run -d \
     --log-opt max-file=5 \
     alantai/api-app:atai-v0.0.0
 
-# test the golang app
-$ curl -k https://0.0.0.0:8443/api/v1/hello # {"Name":"Alan","Hobbies":["workout","programming","driving"]}
+$ docker run -d \
+    --name atai_api_2 \
+    --network atai_envoy \
+    --ip "172.18.0.12" \
+    --log-opt mode=non-blocking \
+    --log-opt max-buffer-size=5m \
+    --log-opt max-size=100m \
+    --log-opt max-file=5 \
+    alantai/api-app:atai-v0.0.0
+
+# test the golang app running in atai_api_1
+$ curl -k https://0.0.0.0:8443/api/v1/hello # response: {"Name":"Alan","Hobbies":["workout","programming","driving"]}
 
 # login to the registry and push the docker image to the container registry
 $ bazel run //api-app:push
@@ -90,11 +100,25 @@ Ref:
 
 ### React build by Bazel (to be continued)
 
-Ref:
-- https://github.com/salrashid123/go-grpc-bazel-docker
-- https://github.com/thelgevold/react-bazel-example
-- https://www.syntaxsuccess.com/viewarticle/large-react-production-bazel-build
 
+```sh
+# build react app
+$ bazel build //react-app
+
+# unzip tar file to test
+$ tar -xf react-all.tar.gz   
+
+```
+Ref:
+- https://github.com/bazelbuild/rules_nodejs/tree/stable/examples/create-react-app
+- https://bazelbuild.github.io/rules_nodejs/examples#react
+- https://github.com/bazelbuild/rules_nodejs/blob/stable/examples/webapp/BUILD.bazel
+- https://github.com/bazelbuild/bazel/blob/master/site/docs/skylark/faq.md
+- https://github.com/thelgevold/react-bazel-example
+- https://github.com/bazelbuild/rules_nodejs/tree/stable/examples/jest
+- https://www.syntaxsuccess.com/viewarticle/large-react-production-bazel-build
+- https://stackoverflow.com/questions/53734988/typescript-how-to-include-imported-images-in-the-output-directory
+- https://duncanleung.com/typescript-module-declearation-svg-img-assets/
 
 
 ## Envoy proxy (in progress)
@@ -183,6 +207,8 @@ Ref:
 - https://www.envoyproxy.io/docs/envoy/latest/start/sandboxes/tls
 - https://hub.docker.com/r/envoyproxy/envoy-alpine-dev
 - https://pi3g.com/2019/01/17/envoy-as-http-2-front-proxy-enabling-http-2-for-envoy-aka-h2/
+- https://myview.rahulnivi.net/api-gateway-envoy-docker/
+- https://github.com/salrashid123/go-grpc-bazel-docker
 
 Issues:
 - https://github.com/gliderlabs/docker-alpine/issues/52

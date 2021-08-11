@@ -1,7 +1,7 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "go_default_library",
+    name = "default",
     srcs = ["types.go"],
     importpath = "github.com/Gogistics/go-web-app/api-app/types",
     visibility = ["//visibility:public"],
